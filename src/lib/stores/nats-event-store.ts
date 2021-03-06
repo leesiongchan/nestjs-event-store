@@ -61,11 +61,13 @@ export class NatsEventStore
     this.addEventHandlers(esStreamConfig.eventHandlers);
 
     if (configService.type === 'nats') {
-      this.eventStore.connect(
-        configService.clusterId,
-        configService.clientId,
-        configService.options
-      );
+      if (!this.eventStore.getClient()) {
+        this.eventStore.connect(
+          configService.clusterId,
+          configService.clientId,
+          configService.options
+        );
+      }
     } else {
       throw new Error('Event store type is not supported  - (nats-event-store.ts)');
     }
